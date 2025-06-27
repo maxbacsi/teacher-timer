@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Science-Themed Classroom Timer</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+    :root {
+      --coa-gold: #FFC72C;
+      --coa-dark-red: #8B0000;
+      --coa-eggshell: #F5F5DC;
+    }
+
+    body {
+      margin: 0;
+      background: white url('https://static.vecteezy.com/system/resources/previews/026/757/327/non_2x/science-seamless-pattern-with-doodles-cartoon-elements-supplies-on-white-background-for-wallpaper-wrapping-paper-stationary-prints-scrapbooking-etc-back-to-school-theme-eps-10-vector.jpg') repeat;
+      background-size: 300px 300px;
+      font-family: 'Comic Neue', cursive, sans-serif;
+      color: #2c3e50;
+      min-height: 100vh;
+      padding: 30px 40px 50px 40px;
+      box-sizing: border-box;
+      user-select: none;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .date {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(139, 0, 0, 0.95);
+      border-radius: 18px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.3), inset 0 0 40px #8B0000;
+      padding: 12px 22px;
+      font-weight: 700;
+      font-size: 1.4em;
+      color: var(--coa-gold);
+      text-shadow: 1px 1px 1px #000;
+      user-select: none;
+      z-index: 100;
+      white-space: nowrap;
+      border: 2px solid #000;
+    }
+
+    #top-row {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    #music-column {
+      width: 260px;
+      height: 140px;
+      margin: 20px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 22px rgba(22, 160, 133, 0.8), inset 0 0 40px #a2e3d6cc;
+      background: white;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    #music-column iframe {
+      width: 100% !important;
+      height: 100% !important;
+      border: none;
+      display: block;
+    }
+
+    #main-content {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 80px;
+      width: 100%;
+      max-width: 900px;
+      margin-top: -15px;
+    }
+
+    .column {
+      background: #f7fbfccc;
+      border-radius: 18px;
+      box-shadow: 0 10px 20px rgba(22, 160, 133, 0.35), inset 0 0 50px #a2e3d6aa;
+      width: 420px;
+      padding: 30px 40px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      transition: transform 0.3s ease;
+      user-select: none;
+    }
+
+    .column:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 14px 30px rgba(22, 160, 133, 0.6), inset 0 0 55px #a2e3d6cc;
+    }
+
+    #schedule-column, #class-column {
+      background: rgba(139, 0, 0, 0.95);
+      box-shadow: 0 10px 20px rgba(139, 0, 0, 0.4), inset 0 0 50px rgba(139, 0, 0, 0.5);
+      color: var(--coa-gold);
+    }
+
+    h1#schedule-title, h1#class-title {
+      font-size: 2.4em;
+      margin: 0 0 24px 0;
+      color: var(--coa-gold);
+      text-align: center;
+      text-shadow: 1px 1px 1px #8B0000aa;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    #schedule .segment-row.current,
+    #class-timer .segment-row.current {
+      background-color: var(--coa-eggshell);
+      color: var(--coa-dark-red) !important;
+      box-shadow: 0 6px 18px var(--coa-eggshell), inset 0 0 25px rgba(255, 255, 255, 0.8);
+    }
+
+    #schedule .segment-row.inactive,
+    #class-timer .segment-row.inactive {
+      background-color: rgba(255, 199, 44, 0.15);
+      color: var(--coa-gold);
+    }
+
+    .segment-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="date" id="date-display"></div>
+  <div id="top-row">
+    <div style="flex: 1;"></div>
+    <div id="music-column">
+      <iframe
+        src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=0&controls=1&modestbranding=1&rel=0&loop=1&playlist=jfKfPfyJRdk"
+        title="Lofi Hip Hop Radio"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+  <div id="main-content">
+    <div class="column" id="schedule-column">
+      <h1 id="schedule-title">Today's Schedule</h1>
+      <div id="schedule"></div>
+    </div>
+    <div class="column" id="class-column">
+      <h1 id="class-title">Today's Class</h1>
+      <div id="class-timer"></div>
+    </div>
+  </div>
+
+  <script>
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function updateDate() {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('date-display').textContent = dateStr;
+    }
+
+    function getCurrentSegment(startTimes) {
+      const now = new Date();
+      for (let i = 0; i < startTimes.length; i++) {
+        const start = new Date();
+        const [h, m] = startTimes[i][0].split(':');
+        start.setHours(parseInt(h), parseInt(m), 0, 0);
+
+        const end = new Date();
+        const [eh, em] = startTimes[i][1].split(':');
+        end.setHours(parseInt(eh), parseInt(em), 0, 0);
+
+        if (now >= start && now < end) return i;
+      }
+      return -1;
+    }
+
+    function updateSchedule() {
+      const schedule = [
+        ['09:15', '10:30', '1st Period'],
+        ['10:30', '11:45', '2nd Period'],
+        ['11:45', '12:10', 'Lunch'],
+        ['12:10', '13:25', '3rd Period'],
+        ['13:25', '14:20', 'Crew'],
+        ['14:20', '15:35', '4th Period']
+      ];
+
+      const currentIdx = getCurrentSegment(schedule);
+      const container = document.getElementById('schedule');
+      container.innerHTML = '';
+
+      schedule.forEach((seg, i) => {
+        const row = document.createElement('div');
+        row.className = 'segment-row ' + (i === currentIdx ? 'current' : 'inactive');
+        row.innerHTML = `<span>${seg[2]}</span><span>${seg[0]} - ${seg[1]}</span>`;
+        container.appendChild(row);
+      });
+    }
+
+    function updateClassTimer() {
+      const now = new Date();
+      const classBlocks = [
+        { start: '09:15', end: '10:30' },
+        { start: '10:30', end: '11:45' },
+        { start: '12:10', end: '13:25' },
+        { start: '14:20', end: '15:35' }
+      ];
+
+      const segments = [
+        ['Get Settled', 5, '#F8BBD0'],
+        ['Mini-Lesson', 15, '#B39DDB'],
+        ['Work Time 1', 20, '#80DEEA'],
+        ['Break', 5, '#FFCC80'],
+        ['Work Time 2', 30, '#A5D6A7']
+      ];
+
+      let isClassTime = false;
+      let blockStart = new Date();
+      let elapsed = 0;
+
+      for (let block of classBlocks) {
+        const start = new Date();
+        const [sh, sm] = block.start.split(':');
+        start.setHours(parseInt(sh), parseInt(sm), 0, 0);
+
+        const end = new Date();
+        const [eh, em] = block.end.split(':');
+        end.setHours(parseInt(eh), parseInt(em), 0, 0);
+
+        if (now >= start && now < end) {
+          isClassTime = true;
+          blockStart = start;
+          elapsed = (now - start) / 60000;
+          break;
+        }
+      }
+
+      const container = document.getElementById('class-timer');
+      container.innerHTML = '';
+
+      if (!isClassTime) return;
+
+      let passed = 0, active = -1;
+      for (let i = 0; i < segments.length; i++) {
+        if (elapsed >= passed && elapsed < passed + segments[i][1]) {
+          active = i;
+          break;
+        }
+        passed += segments[i][1];
+      }
+
+      passed = 0;
+      segments.forEach((seg, i) => {
+        const row = document.createElement('div');
+        row.className = 'segment-row ' + (i === active ? 'current' : 'inactive');
+        row.style.background = i === active ? seg[2] : 'rgba(255,255,255,0.1)';
+        row.style.color = i === active ? '#880E4F' : 'var(--coa-gold)';
+
+        let timeDisplay = seg[1] + ':00';
+        if (i === active) {
+          const minsLeft = Math.max(0, Math.floor(seg[1] - (elapsed - passed)));
+          const secsLeft = Math.max(0, 60 - Math.floor((now - blockStart - passed * 60000) / 1000) % 60);
+          timeDisplay = `${minsLeft}:${secsLeft.toString().padStart(2, '0')}`;
+        }
+
+        row.innerHTML = `<span>${seg[0]}</span><span>${timeDisplay}</span>`;
+        container.appendChild(row);
+        passed += seg[1];
+      });
+    }
+
+    function loop() {
+      updateDate();
+      updateSchedule();
+      updateClassTimer();
+    }
+
+    setInterval(loop, 1000);
+    loop();
+  </script>
+</body>
+</html>
