@@ -4,275 +4,174 @@
   <meta charset="UTF-8" />
   <title>Science-Themed Classroom Timer</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
-
     :root {
       --coa-gold: #FFC72C;
       --coa-dark-red: #8B0000;
       --coa-eggshell: #F5F5DC;
-      --schedule-highlight1: #8B0000; /* dark red */
-      --schedule-highlight1-bg: rgba(139, 0, 0, 0.9);
-      --schedule-highlight2: #B22222; /* firebrick red */
-      --schedule-highlight2-bg: rgba(178, 34, 34, 0.8);
-      --class-highlight1: #C71585; /* medium violet red */
-      --class-highlight1-bg: rgba(199, 21, 133, 0.2);
-      --class-highlight2: #FF69B4; /* hot pink */
-      --class-highlight2-bg: rgba(255, 105, 180, 0.2);
-      --class-highlight3: #DB7093; /* pale violet red */
-      --class-highlight3-bg: rgba(219, 112, 147, 0.2);
-      --class-highlight4: #FF1493; /* deep pink */
-      --class-highlight4-bg: rgba(255, 20, 147, 0.2);
-      --eggshell: #F5F5DC;
     }
 
-    html, body {
+    body {
       margin: 0;
-      padding: 30px 40px 50px 40px;
-      box-sizing: border-box;
-      font-family: 'Comic Neue', cursive, sans-serif;
       background: white url('https://static.vecteezy.com/system/resources/previews/026/757/327/non_2x/science-seamless-pattern-with-doodles-cartoon-elements-supplies-on-white-background-for-wallpaper-wrapping-paper-stationary-prints-scrapbooking-etc-back-to-school-theme-eps-10-vector.jpg') repeat;
       background-size: 300px 300px;
+      font-family: Arial, sans-serif;
       color: #2c3e50;
       min-height: 100vh;
+      padding: 30px 40px 50px 40px;
+      box-sizing: border-box;
       user-select: none;
       position: relative;
-      overflow: hidden;
     }
 
-    /* DRAGGABLE CONTAINERS */
     .draggable {
       position: absolute;
       border: 2px solid #000;
-      background: var(--coa-dark-red);
-      border-radius: 18px;
-      box-shadow: 0 10px 20px rgba(139, 0, 0, 0.4), inset 0 0 50px rgba(139, 0, 0, 0.5);
-      color: var(--coa-gold);
-      box-sizing: border-box;
       resize: both;
       overflow: auto;
       z-index: 1000;
-      display: flex;
-      flex-direction: column;
+      box-sizing: border-box;
     }
 
-    /* RESIZE HANDLES */
+    /* Resize handles: transparent but functional */
     .resize-handle {
       position: absolute;
       width: 16px;
       height: 16px;
-      background: #000;
+      background: transparent;
       z-index: 10;
     }
+
     .resize-handle.br { bottom: 0; right: 0; cursor: se-resize; }
     .resize-handle.bl { bottom: 0; left: 0; cursor: sw-resize; }
     .resize-handle.tr { top: 0; right: 0; cursor: ne-resize; }
     .resize-handle.tl { top: 0; left: 0; cursor: nw-resize; }
 
-    /* DRAG HEADER */
+    /* Drag header: top 20px area for dragging */
     .drag-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
       cursor: move;
-      background: rgba(0, 0, 0, 0.25);
-      padding: 7px 10px;
-      font-weight: 700;
-      font-size: 1.15em;
+      background: rgba(0, 0, 0, 0.1);
+      z-index: 20;
       user-select: none;
-      border-top-left-radius: 16px;
-      border-top-right-radius: 16px;
-      color: var(--coa-gold);
-      text-shadow: 1px 1px 1px #4a0000;
     }
 
-    /* DATE BOX */
-    #date-container {
-      width: max-content;
-      padding: 10px 28px;
+    /* Date box style */
+    .date {
       background: var(--coa-dark-red);
-      box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 0 40px #8B0000;
       border-radius: 18px;
-      color: black;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.3), inset 0 0 40px var(--coa-dark-red);
+      padding: 12px 22px;
       font-weight: 700;
-      font-size: 1.45em;
-      text-shadow: none;
+      font-size: 1.4em;
+      color: var(--coa-gold);
+      text-shadow: 1px 1px 1px #000;
       user-select: none;
       white-space: nowrap;
-    }
-    #date-display {
-      color: white;
-      text-shadow: 0 0 3px black;
+      position: relative;
     }
 
-    /* COLUMN BASE */
-    .column {
-      width: 420px;
-      padding: 28px 38px 38px 38px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    /* HEADINGS */
-    h1 {
-      margin: 0;
-      font-size: 2.6em;
-      color: var(--coa-gold);
-      text-align: center;
-      font-weight: 700;
-      text-shadow: 1px 1px 1px #5f0000cc;
-      user-select: none;
-      letter-spacing: 0.05em;
-    }
-
-    /* Schedule and Class container styling */
-    #schedule-column, #class-column {
+    /* Today's Schedule box style */
+    #schedule-column {
       background: var(--coa-dark-red);
       border-radius: 18px;
-      box-shadow: 0 10px 25px rgba(139, 0, 0, 0.5), inset 0 0 60px rgba(139, 0, 0, 0.6);
-      overflow-y: auto;
+      box-shadow: 0 10px 20px rgba(139, 0, 0, 0.6), inset 0 0 50px rgba(139, 0, 0, 0.7);
+      color: var(--coa-gold);
+      width: 420px;
+      padding: 40px 40px 30px 40px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
     }
 
-    /* Segment rows */
+    /* Today's Class box style */
+    #class-column {
+      background: rgba(20, 60, 100, 0.9);
+      border-radius: 18px;
+      box-shadow: 0 10px 20px rgba(20, 60, 100, 0.6), inset 0 0 50px rgba(20, 60, 100, 0.8);
+      color: #ADD8E6; /* light blue text */
+      width: 420px;
+      padding: 40px 40px 30px 40px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+    }
+
+    /* Music frame */
+    .music-frame {
+      position: relative;
+      background: var(--coa-dark-red);
+      border-radius: 18px;
+      box-shadow: 0 10px 20px rgba(139, 0, 0, 0.6), inset 0 0 50px rgba(139, 0, 0, 0.7);
+      width: 260px;
+      height: 140px;
+      overflow: hidden;
+    }
+
+    .music-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    h1 {
+      font-size: 2.4em;
+      margin: 0 0 24px 0;
+      font-weight: 700;
+      user-select: none;
+      text-align: center;
+      color: inherit;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+    }
+
     .segment-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 18px;
-      font-weight: 700;
-      font-size: 1.3em;
+      padding: 10px 14px;
       border-radius: 12px;
-      user-select: none;
-      transition: background-color 0.4s ease, color 0.4s ease;
-    }
-
-    /* Schedule highlights */
-    .schedule-normal {
-      color: var(--coa-gold);
-      background: transparent;
-    }
-    .schedule-highlight {
-      color: var(--coa-gold);
-      background-color: var(--coa-eggshell);
-    }
-
-    /* Different colors for schedule highlights */
-    .schedule-1 {
-      background-color: var(--schedule-highlight1-bg);
-      color: var(--coa-gold);
-    }
-    .schedule-1.highlight {
-      background-color: var(--coa-eggshell);
-      color: var(--schedule-highlight1);
-    }
-
-    .schedule-2 {
-      background-color: var(--schedule-highlight2-bg);
-      color: var(--coa-gold);
-    }
-    .schedule-2.highlight {
-      background-color: var(--coa-eggshell);
-      color: var(--schedule-highlight2);
-    }
-
-    /* Class timer segments - different highlight colors */
-    .class-segment {
-      color: var(--coa-gold);
-      background-color: transparent;
-      transition: background-color 0.4s ease, color 0.4s ease;
-    }
-    .class-settled {
-      background-color: var(--class-highlight1-bg);
-      color: var(--coa-gold);
-    }
-    .class-settled.highlight {
-      background-color: var(--class-highlight1);
-      color: var(--coa-gold);
-    }
-
-    .class-mini {
-      background-color: var(--class-highlight2-bg);
-      color: var(--coa-gold);
-    }
-    .class-mini.highlight {
-      background-color: var(--class-highlight2);
-      color: var(--coa-gold);
-    }
-
-    .class-work1 {
-      background-color: var(--class-highlight3-bg);
-      color: var(--coa-gold);
-    }
-    .class-work1.highlight {
-      background-color: var(--class-highlight3);
-      color: var(--coa-gold);
-    }
-
-    .class-break {
-      background-color: var(--class-highlight4-bg);
-      color: var(--coa-gold);
-    }
-    .class-break.highlight {
-      background-color: var(--class-highlight4);
-      color: var(--coa-gold);
-    }
-
-    /* Layout for segments label and timer */
-    .segment-label {
-      flex: 1 1 auto;
-    }
-    .segment-time {
-      width: 80px;
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-      font-weight: 900;
-      letter-spacing: 0.03em;
-    }
-
-    /* Music frame */
-    #music-column {
-      width: 260px;
-      height: 140px;
-      padding: 0;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      background: black;
-      border: 2px solid #000;
-      display: flex;
-      flex-direction: column;
-    }
-    #music-column iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      pointer-events: auto;
-      user-select: none;
-      border-radius: 0 0 18px 18px;
-    }
-    #music-column .drag-header {
-      cursor: move;
-      background: rgba(0,0,0,0.3);
-      padding: 5px 10px;
-      font-weight: 700;
-      color: #fff;
-      text-shadow: none;
-      border-radius: 18px 18px 0 0;
+      font-size: 1.3em;
+      font-weight: bold;
       user-select: none;
     }
+
+    /* Highlight colors for Today's Schedule */
+    .schedule-highlight-1 { background: #8B0000cc; color: #FFC72C; }
+    .schedule-highlight-2 { background: #6F0000cc; color: #FFD966; }
+    .schedule-highlight-3 { background: #B22222cc; color: #FFEB99; }
+    .schedule-highlight-4 { background: #7A1F1Fcc; color: #FFE599; }
+    .schedule-highlight-5 { background: #500000cc; color: #FFCC33; }
+
+    /* Highlight colors for Today's Class */
+    .class-highlight-get-settled    { background: #FFB6C1cc; color: #FF1493; }
+    .class-highlight-mini-lesson     { background: #FF69B4cc; color: #C71585; }
+    .class-highlight-work-time-1    { background: #FF1493cc; color: #FFB6C1; }
+    .class-highlight-break          { background: #FFC0CBcc; color: #FF69B4; }
+    .class-highlight-work-time-2    { background: #DB7093cc; color: #FF69B4; }
 
   </style>
 </head>
 <body>
-
-  <div class="draggable" id="date-container" style="top: 20px; left: 20px;">
-    <div class="drag-header">Date</div>
-    <div id="date-display"></div>
+  <!-- Date -->
+  <div class="draggable" id="date-container" style="top: 20px; left: 20px; width: 200px;">
+    <div class="drag-header"></div>
+    <div class="date" id="date-display"></div>
     <div class="resize-handle tl"></div>
     <div class="resize-handle tr"></div>
     <div class="resize-handle bl"></div>
     <div class="resize-handle br"></div>
   </div>
 
+  <!-- Today's Schedule -->
   <div class="draggable column" id="schedule-column" style="top: 100px; left: 40px;">
-    <div class="drag-header">Today's Schedule</div>
+    <div class="drag-header"></div>
     <h1>Today's Schedule</h1>
     <div id="schedule"></div>
     <div class="resize-handle tl"></div>
@@ -281,8 +180,9 @@
     <div class="resize-handle br"></div>
   </div>
 
+  <!-- Today's Class -->
   <div class="draggable column" id="class-column" style="top: 100px; left: 520px;">
-    <div class="drag-header">Today's Class</div>
+    <div class="drag-header"></div>
     <h1>Today's Class</h1>
     <div id="class-timer"></div>
     <div class="resize-handle tl"></div>
@@ -291,8 +191,9 @@
     <div class="resize-handle br"></div>
   </div>
 
-  <div class="draggable music-frame" id="music-column" style="top: 20px; right: 20px;">
-    <div class="drag-header">Lofi</div>
+  <!-- Lofi Music -->
+  <div class="draggable music-frame" id="music-column" style="top: 20px; right: 20px; width: 260px; height: 140px;">
+    <div class="drag-header"></div>
     <iframe
       src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=0&controls=1&modestbranding=1&rel=0&loop=1&playlist=jfKfPfyJRdk"
       title="Lofi Hip Hop Radio"
@@ -306,289 +207,252 @@
   </div>
 
   <script>
-    // Drag and Resize Implementation
-    (function() {
-      const draggables = document.querySelectorAll('.draggable');
-      draggables.forEach(el => {
-        const header = el.querySelector('.drag-header');
-        const handles = {
-          tl: el.querySelector('.resize-handle.tl'),
-          tr: el.querySelector('.resize-handle.tr'),
-          bl: el.querySelector('.resize-handle.bl'),
-          br: el.querySelector('.resize-handle.br'),
-        };
-        let dragActive = false, resizeActive = false;
-        let startX, startY, startWidth, startHeight, startLeft, startTop;
-        let currentHandle = null;
+    // Drag functionality on top 20px only
+    document.querySelectorAll('.draggable').forEach(el => {
+      const header = el.querySelector('.drag-header');
+      let isDragging = false;
+      let offsetX, offsetY;
 
-        // Dragging
-        header.addEventListener('mousedown', e => {
-          e.preventDefault();
-          dragActive = true;
-          const rect = el.getBoundingClientRect();
-          startX = e.clientX;
-          startY = e.clientY;
-          startLeft = rect.left;
-          startTop = rect.top;
-          document.body.style.userSelect = 'none';
-        });
-
-        // Resizing
-        Object.entries(handles).forEach(([key, handle]) => {
-          handle.addEventListener('mousedown', e => {
-            e.preventDefault();
-            resizeActive = true;
-            currentHandle = key;
-            const rect = el.getBoundingClientRect();
-            startX = e.clientX;
-            startY = e.clientY;
-            startWidth = rect.width;
-            startHeight = rect.height;
-            startLeft = rect.left;
-            startTop = rect.top;
-            document.body.style.userSelect = 'none';
-          });
-        });
-
-        document.addEventListener('mousemove', e => {
-          if (dragActive) {
-            let newLeft = startLeft + e.clientX - startX;
-            let newTop = startTop + e.clientY - startY;
-            // keep within viewport horizontally
-            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - el.offsetWidth));
-            // keep within viewport vertically
-            newTop = Math.max(0, Math.min(newTop, window.innerHeight - el.offsetHeight));
-            el.style.left = newLeft + 'px';
-            el.style.top = newTop + 'px';
-          } else if (resizeActive) {
-            let dx = e.clientX - startX;
-            let dy = e.clientY - startY;
-            let newWidth = startWidth;
-            let newHeight = startHeight;
-            let newLeft = startLeft;
-            let newTop = startTop;
-
-            switch (currentHandle) {
-              case 'br':
-                newWidth = startWidth + dx;
-                newHeight = startHeight + dy;
-                break;
-              case 'bl':
-                newWidth = startWidth - dx;
-                newHeight = startHeight + dy;
-                newLeft = startLeft + dx;
-                break;
-              case 'tr':
-                newWidth = startWidth + dx;
-                newHeight = startHeight - dy;
-                newTop = startTop + dy;
-                break;
-              case 'tl':
-                newWidth = startWidth - dx;
-                newHeight = startHeight - dy;
-                newLeft = startLeft + dx;
-                newTop = startTop + dy;
-                break;
-            }
-            // Minimum size limits
-            if (newWidth < 250) newWidth = 250;
-            if (newHeight < 80) newHeight = 80;
-
-            // Keep inside viewport horizontally
-            if (newLeft < 0) newLeft = 0;
-            if (newTop < 0) newTop = 0;
-            if (newLeft + newWidth > window.innerWidth) newWidth = window.innerWidth - newLeft;
-            if (newTop + newHeight > window.innerHeight) newHeight = window.innerHeight - newTop;
-
-            el.style.width = newWidth + 'px';
-            el.style.height = newHeight + 'px';
-            el.style.left = newLeft + 'px';
-            el.style.top = newTop + 'px';
-          }
-        });
-
-        document.addEventListener('mouseup', () => {
-          dragActive = false;
-          resizeActive = false;
-          currentHandle = null;
-          document.body.style.userSelect = 'auto';
-        });
+      header.addEventListener('mousedown', e => {
+        e.preventDefault();
+        isDragging = true;
+        const rect = el.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
       });
-    })();
 
-    // === Date display ===
-    function updateDate() {
-      const dateDiv = document.getElementById('date-display');
-      const now = new Date();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      dateDiv.textContent = now.toLocaleDateString(undefined, options);
-    }
-    updateDate();
-    setInterval(updateDate, 60 * 1000);
-
-    // === Today's Schedule and Today's Class ===
-
-    // Schedule blocks with start/end times in 24h format (HH:MM)
-    // Times are strings; parse and convert to minutes from midnight to compare easily.
-    const dailySchedule = [
-      { name: '1st Period', start: '09:15', end: '10:30' },
-      { name: '2nd Period', start: '10:30', end: '11:45' },
-      { name: 'Lunch', start: '11:45', end: '12:10' },
-      { name: '3rd Period', start: '12:10', end: '13:25' },
-      { name: 'Crew', start: '13:25', end: '14:20' },
-      { name: '4th Period', start: '14:20', end: '15:35' },
-    ];
-
-    // Class segments for periods (except Lunch and Crew)
-    // Each block is 75 minutes total broken down
-    // 5m Settled, 15m Mini-lesson, 20m Work 1, 5m Break, 30m Work 2
-    const classSegments = [
-      { name: 'Get Settled', duration: 5, className: 'class-settled' },
-      { name: 'Mini Lesson', duration: 15, className: 'class-mini' },
-      { name: 'Work Time 1', duration: 20, className: 'class-work1' },
-      { name: 'Break', duration: 5, className: 'class-break' },
-      { name: 'Work Time 2', duration: 30, className: 'class-work1' },
-    ];
-
-    // Special countdowns for Lunch and Crew
-    const lunchDuration = 25; // minutes
-    const crewDuration = 55;  // minutes
-
-    // Convert HH:MM to minutes from midnight
-    function timeStrToMinutes(t) {
-      const [h, m] = t.split(':').map(Number);
-      return h * 60 + m;
-    }
-
-    // Format mm:ss
-    function formatTimeLeft(totalSeconds) {
-      const m = Math.floor(totalSeconds / 60);
-      const s = totalSeconds % 60;
-      return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-    }
-
-    // Get total minutes now
-    function getCurrentMinutes() {
-      const now = new Date();
-      return now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
-    }
-
-    // Update schedule display and highlight current period
-    function updateSchedule() {
-      const scheduleDiv = document.getElementById('schedule');
-      const now = new Date();
-      const nowMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
-
-      let scheduleHtml = '';
-      dailySchedule.forEach((block, i) => {
-        const startMin = timeStrToMinutes(block.start);
-        const endMin = timeStrToMinutes(block.end);
-        const isCurrent = nowMinutes >= startMin && nowMinutes < endMin;
-        const highlightClass = isCurrent ? 'highlight' : '';
-        // Alternate schedule colors between 1 and 2 classes for color scheme
-        const colorClass = i % 2 === 0 ? 'schedule-1' : 'schedule-2';
-        scheduleHtml += `
-          <div class="segment-row schedule-${colorClass} ${highlightClass}">
-            <div>${block.name}</div>
-            <div>${block.start} - ${block.end}</div>
-          </div>`;
-      });
-      scheduleDiv.innerHTML = scheduleHtml;
-    }
-
-    // Update Today's Class timer with segments or lunch/crew countdown
-    function updateClassTimer() {
-      const classDiv = document.getElementById('class-timer');
-      const now = new Date();
-      const nowMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
-
-      // Find current block in schedule
-      let currentBlock = null;
-      for (const block of dailySchedule) {
-        const startMin = timeStrToMinutes(block.start);
-        const endMin = timeStrToMinutes(block.end);
-        if (nowMinutes >= startMin && nowMinutes < endMin) {
-          currentBlock = block;
-          break;
+      document.addEventListener('mousemove', e => {
+        if (isDragging) {
+          el.style.left = `${e.clientX - offsetX}px`;
+          el.style.top = `${e.clientY - offsetY}px`;
         }
-      }
+      });
 
-      if (!currentBlock) {
-        classDiv.innerHTML = '<div style="text-align:center; font-weight:bold; font-size:1.4em;">No class now</div>';
-        return;
-      }
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+    });
 
-      // Handle Lunch and Crew countdown simple timers
-      if (currentBlock.name === 'Lunch') {
-        const startMin = timeStrToMinutes(currentBlock.start);
-        const elapsed = (nowMinutes - startMin) * 60;
-        const total = lunchDuration * 60;
-        const left = Math.max(0, Math.floor(total - elapsed));
-        classDiv.innerHTML = `
-          <div class="segment-row class-break highlight" style="justify-content:center; font-size:1.6em;">
-            <div>Lunch Time</div>
-            <div>${formatTimeLeft(left)}</div>
-          </div>`;
-        return;
-      } else if (currentBlock.name === 'Crew') {
-        const startMin = timeStrToMinutes(currentBlock.start);
-        const elapsed = (nowMinutes - startMin) * 60;
-        const total = crewDuration * 60;
-        const left = Math.max(0, Math.floor(total - elapsed));
-        classDiv.innerHTML = `
-          <div class="segment-row class-break highlight" style="justify-content:center; font-size:1.6em;">
-            <div>Crew Time</div>
-            <div>${formatTimeLeft(left)}</div>
-          </div>`;
-        return;
-      }
-
-      // For periods: build full segment list with times relative to block start
-      const blockStart = timeStrToMinutes(currentBlock.start) * 60;
-      const nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-
-      let elapsedSec = nowSec - blockStart;
-
-      // Clamp elapsedSec between 0 and total duration of classSegments
-      const totalDurationSec = classSegments.reduce((sum,s) => sum + s.duration * 60, 0);
-      if (elapsedSec < 0) elapsedSec = 0;
-      if (elapsedSec > totalDurationSec) elapsedSec = totalDurationSec;
-
-      let html = '';
-      let segmentStart = 0;
-
-      for (const seg of classSegments) {
-        const segDurationSec = seg.duration * 60;
-        const segEnd = segmentStart + segDurationSec;
-        const timeLeft = segmentStart <= elapsedSec && elapsedSec < segEnd
-          ? Math.max(0, Math.floor(segEnd - elapsedSec))
-          : (elapsedSec < segmentStart ? segDurationSec : 0);
-
-        const isCurrent = elapsedSec >= segmentStart && elapsedSec < segEnd;
-        const segmentClass = seg.className + (isCurrent ? ' highlight' : '');
-        const textColor = isCurrent ? seg.className.replace('-bg','') : '';
-        // If highlighted, use solid color for text
-        const textStyle = isCurrent ? `color: var(--${seg.className.replace('class-','')});` : '';
-
-        html += `<div class="segment-row class-segment ${segmentClass}" style="${textStyle}">
-          <div class="segment-label">${seg.name}</div>
-          <div class="segment-time">${formatTimeLeft(timeLeft)}</div>
-        </div>`;
-
-        segmentStart += segDurationSec;
-      }
-
-      classDiv.innerHTML = html;
+    // Helper function to format time as HH:MM
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    // Update loop every second
-    function loop() {
+    // Define schedule periods
+    const periods = [
+      { name: "1st Period", start: "09:15:00", end: "10:30:00" },
+      { name: "2nd Period", start: "10:30:00", end: "11:45:00" },
+      { name: "Lunch", start: "11:45:00", end: "12:10:00" },
+      { name: "3rd Period", start: "12:10:00", end: "13:25:00" },
+      { name: "Crew", start: "13:25:00", end: "14:20:00" },
+      { name: "4th Period", start: "14:20:00", end: "15:35:00" }
+    ];
+
+    // Today's Schedule highlighting colors (one per period)
+    const scheduleHighlightClasses = [
+      "schedule-highlight-1",
+      "schedule-highlight-2",
+      "schedule-highlight-3",
+      "schedule-highlight-4",
+      "schedule-highlight-5",
+      "schedule-highlight-1"
+    ];
+
+    // Class segments for each class period
+    const classSegments = [
+      { name: "Get Settled", duration: 5 * 60, className: "class-highlight-get-settled" },
+      { name: "Mini Lesson", duration: 15 * 60, className: "class-highlight-mini-lesson" },
+      { name: "Work Time 1", duration: 20 * 60, className: "class-highlight-work-time-1" },
+      { name: "Break", duration: 5 * 60, className: "class-highlight-break" },
+      { name: "Work Time 2", duration: 30 * 60, className: "class-highlight-work-time-2" }
+    ];
+
+    // Utility: parse HH:MM:SS string to Date for today
+    function parseTimeToday(timeStr) {
+      const [h, m, s] = timeStr.split(":").map(Number);
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s);
+    }
+
+    // Display date in top left
+    function updateDate() {
+      const dateDisplay = document.getElementById("date-display");
+      const today = new Date();
+      dateDisplay.textContent = today.toLocaleDateString(undefined, {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    // Display Today's Schedule with highlight
+    function updateSchedule() {
+      const scheduleDiv = document.getElementById("schedule");
+      const now = new Date();
+      scheduleDiv.innerHTML = "";
+
+      periods.forEach((period, i) => {
+        const start = parseTimeToday(period.start);
+        const end = parseTimeToday(period.end);
+
+        const row = document.createElement("div");
+        row.classList.add("segment-row");
+
+        // Highlight current period
+        if (now >= start && now < end) {
+          row.classList.add(scheduleHighlightClasses[i]);
+        }
+
+        // Left: period name
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = period.name;
+        row.appendChild(nameSpan);
+
+        // Right: time range
+        const timeSpan = document.createElement("span");
+        timeSpan.textContent = `${period.start} - ${period.end}`;
+        row.appendChild(timeSpan);
+
+        scheduleDiv.appendChild(row);
+      });
+    }
+
+    // Display Today's Class countdown with highlight and timers
+    function updateClassTimer() {
+      const classTimerDiv = document.getElementById("class-timer");
+      const now = new Date();
+
+      // Find current period index
+      let currentPeriodIndex = periods.findIndex(period => {
+        const start = parseTimeToday(period.start);
+        const end = parseTimeToday(period.end);
+        return now >= start && now < end;
+      });
+
+      if (currentPeriodIndex === -1) {
+        classTimerDiv.innerHTML = "<div style='text-align:center; font-size: 1.5em;'>No Class Period Now</div>";
+        return;
+      }
+
+      const currentPeriod = periods[currentPeriodIndex];
+      const periodStart = parseTimeToday(currentPeriod.start);
+      const periodEnd = parseTimeToday(currentPeriod.end);
+
+      classTimerDiv.innerHTML = "";
+
+      // For Lunch and Crew show simple countdown only
+      if (currentPeriod.name === "Lunch") {
+        // Lunch countdown (25 minutes)
+        const totalSeconds = (periodEnd - periodStart) / 1000;
+        const secondsElapsed = Math.floor((now - periodStart) / 1000);
+        const secondsLeft = Math.max(0, totalSeconds - secondsElapsed);
+
+        const lunchRow = document.createElement("div");
+        lunchRow.classList.add("segment-row", "schedule-highlight-3");
+        lunchRow.style.color = "var(--coa-gold)";
+        lunchRow.textContent = `Lunch Time: ${formatMMSS(secondsLeft)}`;
+        classTimerDiv.appendChild(lunchRow);
+
+        return;
+      } else if (currentPeriod.name === "Crew") {
+        // Crew countdown (55 minutes)
+        const totalSeconds = (periodEnd - periodStart) / 1000;
+        const secondsElapsed = Math.floor((now - periodStart) / 1000);
+        const secondsLeft = Math.max(0, totalSeconds - secondsElapsed);
+
+        const crewRow = document.createElement("div");
+        crewRow.classList.add("segment-row", "schedule-highlight-4");
+        crewRow.style.color = "var(--coa-gold)";
+        crewRow.textContent = `Crew Time: ${formatMMSS(secondsLeft)}`;
+        classTimerDiv.appendChild(crewRow);
+
+        return;
+      }
+
+      // For 1st, 2nd, 3rd, 4th Periods show detailed class segments with countdown
+
+      // Calculate total elapsed seconds into the period
+      let elapsed = Math.floor((now - periodStart) / 1000);
+
+      // Total period duration (should be 75 minutes = 4500 seconds)
+      const periodDuration = Math.floor((periodEnd - periodStart) / 1000);
+
+      // Build the rows with times left, highlight current segment
+      classSegments.forEach(segment => {
+        const row = document.createElement("div");
+        row.classList.add("segment-row");
+        row.classList.add(segment.className);
+
+        // Calculate segment times
+        let segmentDuration = segment.duration;
+        let segmentTimeLeft;
+        let segmentStarted = elapsed >= 0;
+        if (elapsed >= segmentDuration) {
+          segmentTimeLeft = 0;
+          elapsed -= segmentDuration;
+        } else {
+          segmentTimeLeft = segmentDuration - elapsed;
+          elapsed = 0;
+          // Highlight this row as current
+          row.style.backgroundColor = hexToRGBA(segment.className, 0.4);
+          row.style.color = segment.className.includes('work-time') ? '#000' : row.style.color;
+        }
+
+        // Text color solid for highlighted segment
+        if (segmentTimeLeft > 0) {
+          row.style.color = getHighlightTextColor(segment.className);
+          row.style.fontWeight = 'bold';
+          row.style.backgroundColor = hexToRGBA(segment.className, 0.6);
+        }
+
+        row.innerHTML = `<span>${segment.name}</span><span>${formatMMSS(segmentTimeLeft)}</span>`;
+        classTimerDiv.appendChild(row);
+      });
+    }
+
+    // Helper to convert highlight class to rgba color for background
+    function hexToRGBA(className, alpha) {
+      const colors = {
+        "class-highlight-get-settled": "255,182,193",    // lightpink
+        "class-highlight-mini-lesson": "255,105,180",    // hotpink
+        "class-highlight-work-time-1": "255,20,147",     // deeppink
+        "class-highlight-break": "255,192,203",          // pink
+        "class-highlight-work-time-2": "219,112,147"     // palevioletred
+      };
+      return `rgba(${colors[className] || "0,0,0"}, ${alpha})`;
+    }
+
+    // Helper to get solid color for highlighted text
+    function getHighlightTextColor(className) {
+      const colors = {
+        "class-highlight-get-settled": "#FF1493",
+        "class-highlight-mini-lesson": "#C71585",
+        "class-highlight-work-time-1": "#FFB6C1",
+        "class-highlight-break": "#FF69B4",
+        "class-highlight-work-time-2": "#FF69B4"
+      };
+      return colors[className] || "#000";
+    }
+
+    // Format seconds as MM:SS
+    function formatMMSS(seconds) {
+      if (seconds < 0) seconds = 0;
+      const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+      const s = (seconds % 60).toString().padStart(2, "0");
+      return `${m}:${s}`;
+    }
+
+    // Initial call and interval update
+    updateDate();
+    updateSchedule();
+    updateClassTimer();
+
+    setInterval(() => {
+      updateDate();
       updateSchedule();
       updateClassTimer();
-    }
-    loop();
-    setInterval(loop, 1000);
+    }, 1000);
   </script>
 </body>
 </html>
-
