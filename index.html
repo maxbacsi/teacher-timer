@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>Science-Themed Classroom Timer</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
     :root {
       --coa-gold: #FFC72C;
       --coa-dark-red: #8B0000;
@@ -12,8 +14,7 @@
 
     body {
       margin: 0;
-      background: white url('https://static.vecteezy.com/system/resources/previews/026/757/327/non_2x/science-seamless-pattern-with-doodles-cartoon-elements-supplies-on-white-background-for-wallpaper-wrapping-paper-stationary-prints-scrapbooking-etc-back-to-school-theme-eps-10-vector.jpg') repeat;
-      background-size: 300px 300px;
+      background: white;
       font-family: Arial, sans-serif;
       color: #2c3e50;
       min-height: 100vh;
@@ -29,10 +30,9 @@
       resize: both;
       overflow: auto;
       z-index: 1000;
-      box-sizing: border-box;
+      border-radius: 18px;
     }
 
-    /* Resize handles: transparent but functional */
     .resize-handle {
       position: absolute;
       width: 16px;
@@ -46,24 +46,19 @@
     .resize-handle.tr { top: 0; right: 0; cursor: ne-resize; }
     .resize-handle.tl { top: 0; left: 0; cursor: nw-resize; }
 
-    /* Drag header: top 20px area for dragging */
     .drag-header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 20px;
       cursor: move;
       background: rgba(0, 0, 0, 0.1);
-      z-index: 20;
-      user-select: none;
+      padding: 5px;
+      font-weight: bold;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
     }
 
-    /* Date box style */
     .date {
-      background: var(--coa-dark-red);
+      background: rgba(139, 0, 0, 0.95);
       border-radius: 18px;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.3), inset 0 0 40px var(--coa-dark-red);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.3), inset 0 0 40px #8B0000;
       padding: 12px 22px;
       font-weight: 700;
       font-size: 1.4em;
@@ -71,48 +66,19 @@
       text-shadow: 1px 1px 1px #000;
       user-select: none;
       white-space: nowrap;
-      position: relative;
     }
 
-    /* Today's Schedule box style */
-    #schedule-column {
-      background: var(--coa-dark-red);
+    .column {
+      background: rgba(139, 0, 0, 0.95);
       border-radius: 18px;
-      box-shadow: 0 10px 20px rgba(139, 0, 0, 0.6), inset 0 0 50px rgba(139, 0, 0, 0.7);
+      box-shadow: 0 10px 20px rgba(139, 0, 0, 0.4), inset 0 0 50px rgba(139, 0, 0, 0.5);
       color: var(--coa-gold);
       width: 420px;
-      padding: 40px 40px 30px 40px;
+      padding: 30px 40px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       gap: 18px;
-      position: relative;
-    }
-
-    /* Today's Class box style */
-    #class-column {
-      background: rgba(20, 60, 100, 0.9);
-      border-radius: 18px;
-      box-shadow: 0 10px 20px rgba(20, 60, 100, 0.6), inset 0 0 50px rgba(20, 60, 100, 0.8);
-      color: #ADD8E6; /* light blue text */
-      width: 420px;
-      padding: 40px 40px 30px 40px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      position: relative;
-    }
-
-    /* Music frame */
-    .music-frame {
-      position: relative;
-      background: var(--coa-dark-red);
-      border-radius: 18px;
-      box-shadow: 0 10px 20px rgba(139, 0, 0, 0.6), inset 0 0 50px rgba(139, 0, 0, 0.7);
-      width: 260px;
-      height: 140px;
-      overflow: hidden;
     }
 
     .music-frame iframe {
@@ -124,11 +90,11 @@
     h1 {
       font-size: 2.4em;
       margin: 0 0 24px 0;
+      color: var(--coa-gold);
+      text-align: center;
+      text-shadow: 1px 1px 1px #8B0000aa;
       font-weight: 700;
       user-select: none;
-      text-align: center;
-      color: inherit;
-      text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
     }
 
     .segment-row {
@@ -139,29 +105,12 @@
       border-radius: 12px;
       font-size: 1.3em;
       font-weight: bold;
-      user-select: none;
     }
-
-    /* Highlight colors for Today's Schedule */
-    .schedule-highlight-1 { background: #8B0000cc; color: #FFC72C; }
-    .schedule-highlight-2 { background: #6F0000cc; color: #FFD966; }
-    .schedule-highlight-3 { background: #B22222cc; color: #FFEB99; }
-    .schedule-highlight-4 { background: #7A1F1Fcc; color: #FFE599; }
-    .schedule-highlight-5 { background: #500000cc; color: #FFCC33; }
-
-    /* Highlight colors for Today's Class */
-    .class-highlight-get-settled    { background: #FFB6C1cc; color: #FF1493; }
-    .class-highlight-mini-lesson     { background: #FF69B4cc; color: #C71585; }
-    .class-highlight-work-time-1    { background: #FF1493cc; color: #FFB6C1; }
-    .class-highlight-break          { background: #FFC0CBcc; color: #FF69B4; }
-    .class-highlight-work-time-2    { background: #DB7093cc; color: #FF69B4; }
-
   </style>
 </head>
 <body>
-  <!-- Date -->
-  <div class="draggable" id="date-container" style="top: 20px; left: 20px; width: 200px;">
-    <div class="drag-header"></div>
+  <div class="draggable" id="date-container" style="top: 20px; left: 20px;">
+    <div class="drag-header">Date</div>
     <div class="date" id="date-display"></div>
     <div class="resize-handle tl"></div>
     <div class="resize-handle tr"></div>
@@ -169,9 +118,8 @@
     <div class="resize-handle br"></div>
   </div>
 
-  <!-- Today's Schedule -->
   <div class="draggable column" id="schedule-column" style="top: 100px; left: 40px;">
-    <div class="drag-header"></div>
+    <div class="drag-header">Today's Schedule</div>
     <h1>Today's Schedule</h1>
     <div id="schedule"></div>
     <div class="resize-handle tl"></div>
@@ -180,9 +128,8 @@
     <div class="resize-handle br"></div>
   </div>
 
-  <!-- Today's Class -->
   <div class="draggable column" id="class-column" style="top: 100px; left: 520px;">
-    <div class="drag-header"></div>
+    <div class="drag-header">Today's Class</div>
     <h1>Today's Class</h1>
     <div id="class-timer"></div>
     <div class="resize-handle tl"></div>
@@ -191,9 +138,8 @@
     <div class="resize-handle br"></div>
   </div>
 
-  <!-- Lofi Music -->
   <div class="draggable music-frame" id="music-column" style="top: 20px; right: 20px; width: 260px; height: 140px;">
-    <div class="drag-header"></div>
+    <div class="drag-header">Lofi</div>
     <iframe
       src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=0&controls=1&modestbranding=1&rel=0&loop=1&playlist=jfKfPfyJRdk"
       title="Lofi Hip Hop Radio"
@@ -207,18 +153,118 @@
   </div>
 
   <script>
-    // Drag functionality on top 20px only
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    function updateDate() {
+      const dateDisplay = document.getElementById('date-display');
+      const now = new Date();
+      dateDisplay.textContent = now.toDateString() + ' ' + formatTime(now);
+    }
+
+    setInterval(updateDate, 1000);
+    updateDate();
+
+    const schedule = [
+      ['1st Period', '09:15', '10:30'],
+      ['2nd Period', '10:30', '11:45'],
+      ['Lunch', '11:45', '12:10'],
+      ['3rd Period', '12:10', '13:25'],
+      ['Crew', '13:25', '14:20'],
+      ['4th Period', '14:20', '15:35']
+    ];
+
+    const classSegments = [
+      ['Get Settled', 5 * 60],
+      ['Mini-Lesson', 15 * 60],
+      ['Work Time 1', 20 * 60],
+      ['Break', 5 * 60],
+      ['Work Time 2', 30 * 60]
+    ];
+
+    const specialSegments = {
+      'Lunch': ['Lunch Time', 25 * 60],
+      'Crew': ['Crew Time', 55 * 60]
+    };
+
+    const scheduleContainer = document.getElementById('schedule');
+    const classTimerContainer = document.getElementById('class-timer');
+
+    function updateScheduleHighlight() {
+      const now = new Date();
+      const currentMins = now.getHours() * 60 + now.getMinutes();
+
+      scheduleContainer.innerHTML = '';
+      let activeLabel = null;
+
+      schedule.forEach(([label, start, end]) => {
+        const startMins = parseInt(start.split(':')[0]) * 60 + parseInt(start.split(':')[1]);
+        const endMins = parseInt(end.split(':')[0]) * 60 + parseInt(end.split(':')[1]);
+        const isActive = currentMins >= startMins && currentMins < endMins;
+        if (isActive) activeLabel = label;
+
+        const row = document.createElement('div');
+        row.className = 'segment-row';
+        row.style.background = isActive ? 'var(--coa-eggshell)' : 'transparent';
+        row.style.color = isActive ? 'black' : 'var(--coa-gold)';
+        row.innerHTML = `<span>${label}</span><span>${start} - ${end}</span>`;
+        scheduleContainer.appendChild(row);
+      });
+
+      updateClassTimer(now, activeLabel);
+    }
+
+    function updateClassTimer(now, currentLabel) {
+      classTimerContainer.innerHTML = '';
+
+      if (!currentLabel) return;
+
+      const currentMins = now.getHours() * 60 + now.getMinutes();
+      const startEntry = schedule.find(([label]) => label === currentLabel);
+      const startTime = parseInt(startEntry[1].split(':')[0]) * 60 + parseInt(startEntry[1].split(':')[1]);
+      const elapsed = currentMins * 60 + now.getSeconds() - startTime * 60;
+
+      let segments = specialSegments[currentLabel] ? [specialSegments[currentLabel]] : classSegments;
+
+      let total = 0;
+      segments.forEach(([label, dur]) => total += dur);
+
+      let timePassed = 0;
+      segments.forEach(([label, duration], i) => {
+        let remaining = Math.max(duration - Math.max(0, elapsed - timePassed), 0);
+        const isActive = elapsed >= timePassed && elapsed < timePassed + duration;
+
+        const div = document.createElement('div');
+        div.className = 'segment-row';
+        div.style.background = isActive ? 'var(--coa-eggshell)' : 'transparent';
+        div.style.color = isActive ? 'black' : 'var(--coa-gold)';
+
+        const mins = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        div.innerHTML = `<span>${label}</span><span>${timeStr}</span>`;
+        classTimerContainer.appendChild(div);
+
+        timePassed += duration;
+      });
+    }
+
+    setInterval(updateScheduleHighlight, 1000);
+    updateScheduleHighlight();
+
     document.querySelectorAll('.draggable').forEach(el => {
       const header = el.querySelector('.drag-header');
       let isDragging = false;
-      let offsetX, offsetY;
+      let offsetX = 0, offsetY = 0;
 
       header.addEventListener('mousedown', e => {
-        e.preventDefault();
         isDragging = true;
         const rect = el.getBoundingClientRect();
         offsetX = e.clientX - rect.left;
         offsetY = e.clientY - rect.top;
+        el.style.zIndex = 1001;
       });
 
       document.addEventListener('mousemove', e => {
@@ -230,229 +276,9 @@
 
       document.addEventListener('mouseup', () => {
         isDragging = false;
+        el.style.zIndex = 1000;
       });
     });
-
-    // Helper function to format time as HH:MM
-    function formatTime(date) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-
-    // Define schedule periods
-    const periods = [
-      { name: "1st Period", start: "09:15:00", end: "10:30:00" },
-      { name: "2nd Period", start: "10:30:00", end: "11:45:00" },
-      { name: "Lunch", start: "11:45:00", end: "12:10:00" },
-      { name: "3rd Period", start: "12:10:00", end: "13:25:00" },
-      { name: "Crew", start: "13:25:00", end: "14:20:00" },
-      { name: "4th Period", start: "14:20:00", end: "15:35:00" }
-    ];
-
-    // Today's Schedule highlighting colors (one per period)
-    const scheduleHighlightClasses = [
-      "schedule-highlight-1",
-      "schedule-highlight-2",
-      "schedule-highlight-3",
-      "schedule-highlight-4",
-      "schedule-highlight-5",
-      "schedule-highlight-1"
-    ];
-
-    // Class segments for each class period
-    const classSegments = [
-      { name: "Get Settled", duration: 5 * 60, className: "class-highlight-get-settled" },
-      { name: "Mini Lesson", duration: 15 * 60, className: "class-highlight-mini-lesson" },
-      { name: "Work Time 1", duration: 20 * 60, className: "class-highlight-work-time-1" },
-      { name: "Break", duration: 5 * 60, className: "class-highlight-break" },
-      { name: "Work Time 2", duration: 30 * 60, className: "class-highlight-work-time-2" }
-    ];
-
-    // Utility: parse HH:MM:SS string to Date for today
-    function parseTimeToday(timeStr) {
-      const [h, m, s] = timeStr.split(":").map(Number);
-      const now = new Date();
-      return new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s);
-    }
-
-    // Display date in top left
-    function updateDate() {
-      const dateDisplay = document.getElementById("date-display");
-      const today = new Date();
-      dateDisplay.textContent = today.toLocaleDateString(undefined, {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    }
-
-    // Display Today's Schedule with highlight
-    function updateSchedule() {
-      const scheduleDiv = document.getElementById("schedule");
-      const now = new Date();
-      scheduleDiv.innerHTML = "";
-
-      periods.forEach((period, i) => {
-        const start = parseTimeToday(period.start);
-        const end = parseTimeToday(period.end);
-
-        const row = document.createElement("div");
-        row.classList.add("segment-row");
-
-        // Highlight current period
-        if (now >= start && now < end) {
-          row.classList.add(scheduleHighlightClasses[i]);
-        }
-
-        // Left: period name
-        const nameSpan = document.createElement("span");
-        nameSpan.textContent = period.name;
-        row.appendChild(nameSpan);
-
-        // Right: time range
-        const timeSpan = document.createElement("span");
-        timeSpan.textContent = `${period.start} - ${period.end}`;
-        row.appendChild(timeSpan);
-
-        scheduleDiv.appendChild(row);
-      });
-    }
-
-    // Display Today's Class countdown with highlight and timers
-    function updateClassTimer() {
-      const classTimerDiv = document.getElementById("class-timer");
-      const now = new Date();
-
-      // Find current period index
-      let currentPeriodIndex = periods.findIndex(period => {
-        const start = parseTimeToday(period.start);
-        const end = parseTimeToday(period.end);
-        return now >= start && now < end;
-      });
-
-      if (currentPeriodIndex === -1) {
-        classTimerDiv.innerHTML = "<div style='text-align:center; font-size: 1.5em;'>No Class Period Now</div>";
-        return;
-      }
-
-      const currentPeriod = periods[currentPeriodIndex];
-      const periodStart = parseTimeToday(currentPeriod.start);
-      const periodEnd = parseTimeToday(currentPeriod.end);
-
-      classTimerDiv.innerHTML = "";
-
-      // For Lunch and Crew show simple countdown only
-      if (currentPeriod.name === "Lunch") {
-        // Lunch countdown (25 minutes)
-        const totalSeconds = (periodEnd - periodStart) / 1000;
-        const secondsElapsed = Math.floor((now - periodStart) / 1000);
-        const secondsLeft = Math.max(0, totalSeconds - secondsElapsed);
-
-        const lunchRow = document.createElement("div");
-        lunchRow.classList.add("segment-row", "schedule-highlight-3");
-        lunchRow.style.color = "var(--coa-gold)";
-        lunchRow.textContent = `Lunch Time: ${formatMMSS(secondsLeft)}`;
-        classTimerDiv.appendChild(lunchRow);
-
-        return;
-      } else if (currentPeriod.name === "Crew") {
-        // Crew countdown (55 minutes)
-        const totalSeconds = (periodEnd - periodStart) / 1000;
-        const secondsElapsed = Math.floor((now - periodStart) / 1000);
-        const secondsLeft = Math.max(0, totalSeconds - secondsElapsed);
-
-        const crewRow = document.createElement("div");
-        crewRow.classList.add("segment-row", "schedule-highlight-4");
-        crewRow.style.color = "var(--coa-gold)";
-        crewRow.textContent = `Crew Time: ${formatMMSS(secondsLeft)}`;
-        classTimerDiv.appendChild(crewRow);
-
-        return;
-      }
-
-      // For 1st, 2nd, 3rd, 4th Periods show detailed class segments with countdown
-
-      // Calculate total elapsed seconds into the period
-      let elapsed = Math.floor((now - periodStart) / 1000);
-
-      // Total period duration (should be 75 minutes = 4500 seconds)
-      const periodDuration = Math.floor((periodEnd - periodStart) / 1000);
-
-      // Build the rows with times left, highlight current segment
-      classSegments.forEach(segment => {
-        const row = document.createElement("div");
-        row.classList.add("segment-row");
-        row.classList.add(segment.className);
-
-        // Calculate segment times
-        let segmentDuration = segment.duration;
-        let segmentTimeLeft;
-        let segmentStarted = elapsed >= 0;
-        if (elapsed >= segmentDuration) {
-          segmentTimeLeft = 0;
-          elapsed -= segmentDuration;
-        } else {
-          segmentTimeLeft = segmentDuration - elapsed;
-          elapsed = 0;
-          // Highlight this row as current
-          row.style.backgroundColor = hexToRGBA(segment.className, 0.4);
-          row.style.color = segment.className.includes('work-time') ? '#000' : row.style.color;
-        }
-
-        // Text color solid for highlighted segment
-        if (segmentTimeLeft > 0) {
-          row.style.color = getHighlightTextColor(segment.className);
-          row.style.fontWeight = 'bold';
-          row.style.backgroundColor = hexToRGBA(segment.className, 0.6);
-        }
-
-        row.innerHTML = `<span>${segment.name}</span><span>${formatMMSS(segmentTimeLeft)}</span>`;
-        classTimerDiv.appendChild(row);
-      });
-    }
-
-    // Helper to convert highlight class to rgba color for background
-    function hexToRGBA(className, alpha) {
-      const colors = {
-        "class-highlight-get-settled": "255,182,193",    // lightpink
-        "class-highlight-mini-lesson": "255,105,180",    // hotpink
-        "class-highlight-work-time-1": "255,20,147",     // deeppink
-        "class-highlight-break": "255,192,203",          // pink
-        "class-highlight-work-time-2": "219,112,147"     // palevioletred
-      };
-      return `rgba(${colors[className] || "0,0,0"}, ${alpha})`;
-    }
-
-    // Helper to get solid color for highlighted text
-    function getHighlightTextColor(className) {
-      const colors = {
-        "class-highlight-get-settled": "#FF1493",
-        "class-highlight-mini-lesson": "#C71585",
-        "class-highlight-work-time-1": "#FFB6C1",
-        "class-highlight-break": "#FF69B4",
-        "class-highlight-work-time-2": "#FF69B4"
-      };
-      return colors[className] || "#000";
-    }
-
-    // Format seconds as MM:SS
-    function formatMMSS(seconds) {
-      if (seconds < 0) seconds = 0;
-      const m = Math.floor(seconds / 60).toString().padStart(2, "0");
-      const s = (seconds % 60).toString().padStart(2, "0");
-      return `${m}:${s}`;
-    }
-
-    // Initial call and interval update
-    updateDate();
-    updateSchedule();
-    updateClassTimer();
-
-    setInterval(() => {
-      updateDate();
-      updateSchedule();
-      updateClassTimer();
-    }, 1000);
   </script>
 </body>
 </html>
